@@ -10,6 +10,8 @@
 # these are per-agent duplicates/links created by `npx skills add`
 /agent/
 /.claude/skills/
+# local agent preview config
+/.claude/launch.json
 
 # dependencies
 /node_modules

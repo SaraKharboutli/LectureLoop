@@ -9,7 +9,7 @@ Build mode: fast (learner: "I don't want you to tell me when each step is finish
 
 ## Slices
 
-- [ ] **1. A lecture text goes in, well-timed grounded questions come out**
+- [x] **1. A lecture text goes in, well-timed grounded questions come out**
   Becomes usable: `npm run replay -- fixtures/lectures/<file>.txt` replays a lecture at simulated speed through the real timing rules, prompt, Claude call and validator, and prints a timeline: when each question would appear, its concept, question, choices, answer, the evidence quote, and why other moments were skipped. Also prints token usage / estimated cost. `--model` switches between Sonnet 5.5 and Opus 5.5.
   Why now: This is the kernel (`scope.md > The Unique Kernel`): *when* to ask and *what* to ask, grounded in what was said. It is also the biggest risk (AI judgment quality), so it is proven first without needing audio. Bootstrapping (Next.js scaffold, deps, env, Vitest) lives here.
   PRD ref: `prd.md > Checkpoint timing (the kernel)`, `prd.md > Quick Check question`
@@ -19,7 +19,7 @@ Build mode: fast (learner: "I don't want you to tell me when each step is finish
   Learner check: Read the printed timeline for one fixture next to the lecture text. Do the questions feel like the right moments and the right things to ask?
   Commit: `Add checkpoint engine: timing rules, grounded MCQ generation, replay script`
 
-- [ ] **2. Start Learning shows the lecture as live text**
+- [x] **2. Start Learning shows the lecture as live text**
   Becomes usable: Open the app, tap Start Learning, allow the mic, and spoken English appears in the top transcript area within seconds (in-progress words lighter). Header shows Listening, elapsed time, and End (End stops listening for now).
   Why now: Live audio → text is the second big risk (browser audio format, temporary-token WebSocket auth) and everything live depends on it.
   PRD ref: `prd.md > Starting a session`, `prd.md > Live transcript`, `prd.md > Screens and Layout`
@@ -29,7 +29,7 @@ Build mode: fast (learner: "I don't want you to tell me when each step is finish
   Learner check: On the laptop at http://localhost:3000, tap Start Learning, play a recorded English lecture (or speak) near the mic, and watch the words appear.
   Commit: `Add live transcription: mic capture, Deepgram streaming, lecture screen`
 
-- [ ] **3. Quick Check cards appear during the lecture and record answers**
+- [x] **3. Quick Check cards appear during the lecture and record answers**
   Becomes usable: While listening, after the lecturer finishes an idea, a Quick Check card slides into the bottom area; tapping an answer shows "Got it ✓" or "Needs review" plus explanation; unanswered cards vanish after 90 s; status dots show ✓ / ⚠ / ○ live; missed concepts can be re-checked later.
   Why now: Joins slice 1 (kernel) and slice 2 (live text) into the core loop; this is where early learner feedback can still reshape timing and card design.
   PRD ref: `prd.md > Checkpoint timing (the kernel)`, `prd.md > Answering and feedback`, `prd.md > Understanding tracking`
@@ -39,7 +39,7 @@ Build mode: fast (learner: "I don't want you to tell me when each step is finish
   Learner check: With a recorded lecture playing aloud near the laptop, use LectureLoop for ~6–8 minutes: answer one question right, one wrong, ignore one. Do the timing and card feel right?
   Commit: `Add live Quick Check cards, answer feedback, and understanding tracking`
 
-- [ ] **4. End shows the Lecture Mastery summary**
+- [x] **4. End shows the Lecture Mastery summary**
   Becomes usable: Tap End → listening stops → Lecture Mastery shows counts (understood / needs review / unanswered) and every question with your answer, the correct answer, and explanation; unanswered questions can be answered there; New session starts over.
   Why now: Closes the core loop (`scope.md > What "Working" Looks Like`); needs the question data from slice 3.
   PRD ref: `prd.md > Ending and Mastery Summary`, `prd.md > The Core Journey` (steps 9–10)
@@ -71,7 +71,7 @@ Build mode: fast (learner: "I don't want you to tell me when each step is finish
 
 ## Hands-on Checkpoints
 
-- [ ] Early usable behavior explored — after slice 3 (live cards on localhost with a real recorded lecture)
+- [x] Early usable behavior explored — after slice 3 (live cards on localhost with a real recorded lecture). Three learner tests on a recorded history lecture; feedback (too few questions, don't depend on pauses, aim for one every 1.5–2 min) applied and confirmed: "two questions in about 3 minutes" — see Revisions.
 - [ ] Final kick-the-tires exploration and feedback completed
 
 ## Final Review
