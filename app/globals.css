@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+/* LectureLoop palette — see devpost/spec.md > Look and Feel.
+   ~80% white, ~15% Indigo, ~5% status colors. No red anywhere. */
+@theme {
+  --color-paper: #ffffff;
+  --color-primary: #5b5bd6;
+  --color-primary-dark: #4747c2;
+  --color-tint: #eef2ff;
+  --color-ink: #111827;
+  --color-muted: #6b7280;
+  --color-idle: #9ca3af;
+  --color-success: #22c55e;
+  --color-review: #f59e0b;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+html,
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  -webkit-tap-highlight-color: transparent;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes soft-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.85);
+  }
+}
+
+.animate-card-in {
+  animation: card-in 220ms ease-out both;
+}
+
+.animate-soft-pulse {
+  animation: soft-pulse 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-card-in,
+  .animate-soft-pulse {
+    animation: none;
+  }
+}

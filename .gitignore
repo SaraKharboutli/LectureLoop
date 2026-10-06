@@ -1,0 +1,34 @@
+# Personal learning context (Devpost Learn) — kept out of commits by default
+/devpost/learner-profile.md
+
+# Local credentials — never commit secrets. A secret-free .env.example is allowed.
+.env
+.env.*
+!.env.example
+
+# Devpost Learn Skill Pack: .agents/skills + skills-lock.json are the canonical install (committed);
+# these are per-agent duplicates/links created by `npx skills add`
+/agent/
+/.claude/skills/
+
+# dependencies
+/node_modules
+
+# next.js / build output
+/.next/
+/out/
+/build
+*.tsbuildinfo
+next-env.d.ts
+
+# testing / dev artifacts
+/coverage
+/tmp/
+
+# misc
+.DS_Store
+*.pem
+npm-debug.log*
+
+# vercel
+.vercel
