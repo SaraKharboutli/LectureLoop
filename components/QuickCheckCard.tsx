@@ -31,6 +31,9 @@ export function QuickCheckCard({ question: q, variant, onAnswer, onDismiss }: Pr
       )}
 
       <p className="text-[18px] font-semibold leading-snug sm:text-xl">{q.question}</p>
+      {live && !answered && (
+        <p className="mt-1 hidden text-xs text-muted lg:block">Based on the highlighted part of the lecture</p>
+      )}
 
       <div className="mt-3 grid gap-2">
         {q.choices.map((choice, i) => {

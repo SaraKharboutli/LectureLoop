@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { deleteLecture, loadLectures, upsertLecture, type SavedLecture } from "@/lib/session/savedLectures";
 import { newId, useLectureSession, type DevFeed } from "@/lib/session/useLectureSession";
 import { LectureScreen } from "./LectureScreen";
@@ -21,6 +21,16 @@ export function LectureLoopApp() {
   }, [params]);
 
   const { state, start, end, answer, dismiss, reset, clock } = useLectureSession(devFeed);
+
+  // DEVELOPMENT ONLY: &autostart=1 starts the dev feed without a tap (used for headless screenshots).
+  const autostart = devFeed !== null && params.get("autostart") === "1";
+  const autostarted = useRef(false); // React dev mode runs effects twice; start only once
+  useEffect(() => {
+    if (!autostart || autostarted.current) return;
+    autostarted.current = true;
+    void start();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once on load
+  }, [autostart]);
 
   // My lectures (saved on this device) — read after mount, refreshed whenever we're back on the Start screen.
   const [lectures, setLectures] = useState<SavedLecture[]>([]);

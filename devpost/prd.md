@@ -42,6 +42,7 @@ Set by the learner:
 - **Colors:** White `#FFFFFF` (main background); Primary Indigo `#5B5BD6` (buttons, active indicator, accents); light Indigo tint `#EEF2FF` (cards and background panels); Dark Navy `#111827` (main text); calm green `#22C55E` **only** for correct/mastered states.
 - **Proportion:** about 80% white, 15% Indigo, 5% status colors.
 - **Feel:** calm, quiet, low-attention, a background companion and not a dashboard (`scope.md > Inspiration & Identity`). Soft rounded cards, generous spacing, large touch targets for a phone or iPad.
+- **Added at final review (learner decision, to strengthen the Design criterion):** a LectureLoop logo (a listening dot inside an open loop) used in the header, start screen, summary and as the browser-tab icon; a three-step "how it works" strip on the Start screen (Listen → Quick check → Review); while a question is showing, **the sentence it was built from is highlighted in the transcript** (so the student and a viewer can see it comes from what was said); and a **side-by-side layout on laptops / landscape tablets** (transcript left, quick checks right).
 - *Assumption:* "needs review" uses a soft amber (e.g. `#F59E0B`) inside the 5% status budget, so red/alarm colors never appear. Unanswered uses a neutral gray. Typography is a clean, readable sans-serif.
 
 ## Features and Behavior

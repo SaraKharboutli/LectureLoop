@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { formatClock } from "@/lib/checkpoints/window";
 import type { Session } from "@/lib/session/types";
 import { CheckpointArea } from "./CheckpointArea";
+import { LogoMark, Wordmark } from "./Logo";
 import { TranscriptPane } from "./TranscriptPane";
 
 type Props = {
@@ -33,10 +34,11 @@ export function LectureScreen({ state, clock, onEnd, onAnswer, onDismiss }: Prop
   const active = state.questions.find((q) => q.id === state.activeQuestionId) ?? null;
 
   return (
-    <main className="mx-auto flex h-dvh max-w-3xl flex-col">
-      <header className="flex items-center gap-3 border-b border-primary/10 px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))]">
-        <span className="font-semibold">LectureLoop</span>
-        <span className="flex items-center gap-1.5 text-sm text-muted" role="status">
+    <main className="mx-auto flex h-dvh max-w-3xl flex-col lg:max-w-7xl">
+      <header className="flex items-center gap-3 border-b border-primary/10 px-4 py-3 pt-[max(0.75rem,env(safe-area-inset-top))] lg:px-8">
+        <LogoMark size={28} />
+        <Wordmark className="text-[17px]" />
+        <span className="ml-1 flex items-center gap-1.5 text-sm text-muted" role="status">
           <span className={`h-2.5 w-2.5 rounded-full ${status.dot} ${status.pulse ? "animate-soft-pulse" : ""}`} />
           {status.text}
         </span>
@@ -50,9 +52,16 @@ export function LectureScreen({ state, clock, onEnd, onAnswer, onDismiss }: Prop
         </button>
       </header>
 
-      <TranscriptPane segments={state.segments} interim={state.interim} compact={active !== null} />
-
-      <CheckpointArea questions={state.questions} active={active} onAnswer={onAnswer} onDismiss={onDismiss} />
+      {/* Phones/tablets portrait: transcript above, quick checks below. Laptops/landscape: side by side. */}
+      <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
+        <TranscriptPane
+          segments={state.segments}
+          interim={state.interim}
+          compact={active !== null}
+          highlightQuote={active && active.answerIndex === null ? active.evidenceQuote : null}
+        />
+        <CheckpointArea questions={state.questions} active={active} onAnswer={onAnswer} onDismiss={onDismiss} />
+      </div>
     </main>
   );
 }

@@ -24,7 +24,7 @@ Students often spend an hour passively listening to a lecture, then another hour
 6. **End → Lecture Mastery**: counts per status, every question with your answer, the correct answer and the explanation. Questions you missed can be answered right there.
 7. **My lectures**: every ended session is saved **on your device** (no account). The Start screen lists them. Open one to see its summary and the lecture text, and **Try again** any question you got wrong. Getting it right marks the concept "understood after review".
 
-Everything is designed for a quick glance: calm colors, big tap targets, and cards that fit a phone screen without scrolling.
+Everything is designed for a quick glance: calm colors, big tap targets, and cards that fit a phone screen without scrolling. While a question is on screen, **the sentence it came from is highlighted in the transcript**, so you can see it was really said. On laptops and landscape tablets the transcript and the quick checks sit side by side.
 
 ## How it works
 

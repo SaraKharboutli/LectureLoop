@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Local scratch output (replay reports, screenshots, headless-browser profile) — not project code.
+    "tmp/**",
   ]),
 ]);
 

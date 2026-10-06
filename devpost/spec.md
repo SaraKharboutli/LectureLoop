@@ -182,6 +182,13 @@ PRD ref: `prd.md > Quick Check question` (grounded), `prd.md > Checkpoint timing
 Actions: `START`, `MIC_ERROR`, `CONNECTION`, `INTERIM`, `FINAL_SEGMENT`, `EVAL_STARTED`, `EVAL_DONE`, `QUESTION_SHOWN`, `ANSWER`, `CARD_TIMEOUT`, `CARD_DISMISSED`, `END`, `RESET`.
 PRD ref: `prd.md > Understanding tracking`, `prd.md > Ending and Mastery Summary`.
 
+### Visual identity and wide layout (final review)
+- `components/Logo.tsx` (`LogoMark`, `Wordmark`) and `app/icon.svg` (browser-tab icon; replaces the default Next.js favicon).
+- `lib/checkpoints/highlight.ts` (`findQuoteWords`, pure + tested) maps the active question's `evidenceQuote` onto transcript words (exact match, then the same tolerant match as the validator); `TranscriptPane` highlights them and scrolls the first one into view while the card is open.
+- `LectureScreen` switches to two columns at the `lg` breakpoint (≥ 1024 px): transcript left, `CheckpointArea` as a fixed 440–480 px right column.
+- Dev-only `&autostart=1` (with `?devfeed=`) starts the fixture feed without a tap, for headless screenshots.
+PRD ref: `prd.md > Look and Feel`.
+
 ### Saved Lectures
 `lib/session/savedLectures.ts` (pure helpers + guarded `localStorage` access) and `components/MyLectures.tsx` / `components/SavedLectureScreen.tsx`. Added at final review (learner decision).
 - Key `lectureloop.lectures.v1` holds a JSON array of `{ id, savedAt, durationSec, transcript, questions }` (newest first, max 30 kept; oldest dropped). Every read/write is wrapped in try/catch, so private mode or full storage just means nothing is saved, never a crash.

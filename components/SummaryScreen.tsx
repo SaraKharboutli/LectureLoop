@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import { deriveConcepts, masteryCounts } from "@/lib/session/mastery";
 import type { Question } from "@/lib/session/types";
+import { LogoMark, Wordmark } from "./Logo";
 import { QuickCheckCard } from "./QuickCheckCard";
 
 type Props = {
@@ -32,6 +33,10 @@ export function SummaryScreen({ questions, wordCount, onAnswer, onRetry, subtitl
 
   return (
     <main className="mx-auto max-w-2xl px-5 py-8 pb-[max(2rem,env(safe-area-inset-bottom))]">
+      <div className="mb-6 flex items-center gap-2">
+        <LogoMark size={26} />
+        <Wordmark className="text-[16px]" />
+      </div>
       <h1 className="text-3xl font-semibold tracking-tight">Lecture Mastery</h1>
       {subtitle && <p className="mt-1 text-muted">{subtitle}</p>}
 

@@ -47,7 +47,7 @@
 <body>
 <main>
   <h1>LectureLoop — App Map</h1>
-  <p class="sub">A take-home guide to what you built, where each part lives, and where to start when you want to change something. Snapshot of commit <code>d8bfcef</code>; the code may drift after this.</p>
+  <p class="sub">A take-home guide to what you built, where each part lives, and where to start when you want to change something. Snapshot of the code after the final-review design polish (Oct 2026); the code may drift after this.</p>
 
   <h2>What it is, in one breath</h2>
   <p>LectureLoop listens to a live English lecture, shows it as text, and about every minute and a half asks one multiple-choice question about a point the lecturer has just finished. It only asks things that were actually said, and it checks the quote to prove it. At the end you get a mastery summary, and every ended lecture is saved on the device so you can come back and retry what you missed.</p>
@@ -108,7 +108,10 @@
       <tr><td>How long an unanswered card stays</td><td><span class="path">lib/checkpoints/config.ts</span>: <code>CARD_TIMEOUT_SEC</code></td></tr>
       <tr><td>Colors</td><td><span class="path">app/globals.css</span>: the <code>@theme</code> block</td></tr>
       <tr><td>Card wording ("Got it ✓", "Needs review")</td><td><span class="path">components/QuickCheckCard.tsx</span></td></tr>
-      <tr><td>Start screen text or the My lectures list</td><td><span class="path">components/StartScreen.tsx</span>, <span class="path">components/MyLectures.tsx</span></td></tr>
+      <tr><td>Start screen text, the "how it works" steps, or the My lectures list</td><td><span class="path">components/StartScreen.tsx</span> (<code>STEPS</code>), <span class="path">components/MyLectures.tsx</span></td></tr>
+      <tr><td>The logo and browser-tab icon</td><td><span class="path">components/Logo.tsx</span> (<code>LogoMark</code>) and <span class="path">app/icon.svg</span>. Keep the two in sync</td></tr>
+      <tr><td>How the source sentence is highlighted while a question is open</td><td><span class="path">lib/checkpoints/highlight.ts</span> (<code>findQuoteWords</code>) and the <code>&lt;mark&gt;</code> styling in <span class="path">components/TranscriptPane.tsx</span></td></tr>
+      <tr><td>The laptop side-by-side layout</td><td><span class="path">components/LectureScreen.tsx</span> and <span class="path">components/CheckpointArea.tsx</span> (the <code>lg:</code> classes)</td></tr>
       <tr><td>Speech-to-text settings (model, language)</td><td><span class="path">lib/transcription/deepgramUrl.ts</span></td></tr>
     </tbody>
   </table>
@@ -122,7 +125,7 @@
   <h2>Run it again</h2>
   <pre>npm install
 npm run dev            # then open http://localhost:3000 (Chrome/Edge), tap Start Learning
-npm test               # 54 unit tests
+npm test               # 58 unit tests
 npm run replay -- fixtures/lectures/biology-photosynthesis.txt</pre>
   <p>Keys go in <code>.env.local</code> (see <code>.env.example</code>). Live version: <a href="https://lecture-loop-three.vercel.app">lecture-loop-three.vercel.app</a>. Planning documents: <span class="path">devpost/scope.md</span>, <span class="path">prd.md</span>, <span class="path">spec.md</span>, <span class="path">checklist.md</span>.</p>
 
