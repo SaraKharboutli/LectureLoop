@@ -81,6 +81,7 @@ Rationale (agent-recommended, needs learner agreement at review):
 - **Keys:** copy `.env.example` → `.env.local` and fill in `DEEPGRAM_API_KEY`, `ANTHROPIC_API_KEY`, and optionally `CLAUDE_MODEL`. `.env.local` is git-ignored. **Keys are never pasted into chat or committed.**
 - **Run locally (laptop):** `npm install` then `npm run dev` → open http://localhost:3000. The mic works on `localhost`. Play a recorded English lecture out loud near the laptop, or speak.
 - **Run on phone/iPad:** browsers only allow the mic on `https`. Deploy to **Vercel**: import the GitHub repo, add the same env vars in Vercel → Settings → Environment Variables, deploy, and open the `https://….vercel.app` link on the device. Deployment is optional for the competition; it is recommended here because the learner's target devices are phone/iPad.
+- **Live deployment:** https://lecture-loop-three.vercel.app (Vercel Hobby, auto-deploys from `main` of https://github.com/SaraKharboutli/LectureLoop). The `*-frdc1.vercel.app` deployment URLs are behind Vercel Authentication; the production domain above is public. Env vars set in Vercel: `DEEPGRAM_API_KEY`, `ANTHROPIC_API_KEY`, `CLAUDE_MODEL`.
 - **Demo/recording (for `6-ship`, later):** the deployed link on an iPad, or localhost on a laptop, with a real lecture playing aloud.
 - **Public link caution:** anyone with the URL could use the app on the learner's credits. Set a monthly spend limit in the Anthropic Console. Deepgram usage draws from the free credit.
 

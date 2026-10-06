@@ -4,6 +4,8 @@
 
 > The AI should enhance the lecture, not replace it, and not distract from it.
 
+**Try it:** https://lecture-loop-three.vercel.app (allow the microphone, then play or give an English lecture).
+
 Built for the Devpost hackathon **Build With AI: Basics** using the Devpost Learn Skill Pack (planning docs in [`devpost/`](devpost/)).
 
 ---
@@ -65,8 +67,8 @@ Next.js (App Router) · React · TypeScript · Tailwind CSS · Deepgram live str
 ### Setup
 
 ```bash
-git clone https://github.com/SaraKharboutli/lecture-loop.git
-cd lecture-loop
+git clone https://github.com/SaraKharboutli/LectureLoop.git
+cd LectureLoop
 npm install
 ```
 
