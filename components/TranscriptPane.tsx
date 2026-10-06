@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef } from "react";
 import { findQuoteWords, segmentWords } from "@/lib/checkpoints/highlight";
 import type { Segment } from "@/lib/checkpoints/types";
 
 const NEAR_BOTTOM_PX = 80;
+const MARK_CLASS = "bg-primary/15 text-ink underline decoration-primary/50 decoration-2 underline-offset-[6px]";
 
 type Props = {
   segments: Segment[];
@@ -15,6 +16,44 @@ type Props = {
   highlightQuote: string | null;
 };
 
+/**
+ * One finalized piece of transcript. Memoized: during a long lecture only new or highlighted
+ * segments re-render, instead of every word on every speech update.
+ */
+const SegmentText = memo(function SegmentText({
+  text,
+  marked,
+  joinNext,
+  firstPart,
+  onFirstMark,
+}: {
+  text: string;
+  /** Comma-separated word indices to highlight ("" = none). A string keeps memo comparison cheap. */
+  marked: string;
+  joinNext: boolean;
+  firstPart: number | null;
+  onFirstMark: (el: HTMLElement | null) => void;
+}) {
+  if (!marked) return <>{text} </>;
+  const on = new Set(marked.split(",").map(Number));
+  const parts = segmentWords(text);
+  return (
+    <>
+      {parts.map((part, pi) => {
+        // A space is highlighted when the words on both sides are, so the quote reads as one band.
+        const hl = /^\s+$/.test(part) ? on.has(pi - 1) && on.has(pi + 1) : on.has(pi);
+        if (!hl) return <span key={pi}>{part}</span>;
+        return (
+          <mark key={pi} ref={pi === firstPart ? onFirstMark : undefined} className={MARK_CLASS}>
+            {part}
+          </mark>
+        );
+      })}
+      {joinNext ? <mark className={MARK_CLASS}> </mark> : " "}
+    </>
+  );
+});
+
 export function TranscriptPane({ segments, interim, compact, highlightQuote }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const markRef = useRef<HTMLElement | null>(null);
@@ -24,19 +63,25 @@ export function TranscriptPane({ segments, interim, compact, highlightQuote }: P
     () => (highlightQuote ? findQuoteWords(segments, highlightQuote) : new Set<string>()),
     [segments, highlightQuote],
   );
-  // The first highlighted word (in reading order) is what gets scrolled into view.
-  const firstKey = useMemo(() => {
-    let first: string | null = null;
-    let best = [Infinity, Infinity];
+
+  // Group highlighted word keys ("segment:part") per segment, and find the first one in reading order.
+  const { perSegment, first } = useMemo(() => {
+    const per = new Map<number, number[]>();
     for (const k of highlighted) {
       const [si, pi] = k.split(":").map(Number);
-      if (si < best[0] || (si === best[0] && pi < best[1])) {
-        best = [si, pi];
-        first = k;
-      }
+      per.set(si, [...(per.get(si) ?? []), pi]);
     }
-    return first;
+    let f: [number, number] | null = null;
+    for (const [si, parts] of per) {
+      const pi = Math.min(...parts);
+      if (!f || si < f[0] || (si === f[0] && pi < f[1])) f = [si, pi];
+    }
+    return { perSegment: per, first: f };
   }, [highlighted]);
+
+  const onFirstMark = useCallback((el: HTMLElement | null) => {
+    markRef.current = el;
+  }, []);
 
   // While a question is showing, bring its source sentence into view; otherwise follow the newest words.
   useEffect(() => {
@@ -74,29 +119,18 @@ export function TranscriptPane({ segments, interim, compact, highlightQuote }: P
       ) : (
         <p className="mx-auto max-w-[68ch]">
           {segments.map((s, si) => {
-            const parts = segmentWords(s.text);
-            // The space between two segments is highlighted when the quote continues across them.
-            const joinOn = highlighted.has(`${si}:${parts.length - 1}`) && highlighted.has(`${si + 1}:0`);
+            const parts = perSegment.get(si);
+            const lastPart = parts ? segmentWords(s.text).length - 1 : -1;
             return (
-            <span key={s.id}>
-              {parts.map((part, pi) => {
-                // A space is highlighted when the words on both sides are, so the quote reads as one band.
-                const on = /^\s+$/.test(part)
-                  ? highlighted.has(`${si}:${pi - 1}`) && highlighted.has(`${si}:${pi + 1}`)
-                  : highlighted.has(`${si}:${pi}`);
-                if (!on) return <span key={pi}>{part}</span>;
-                return (
-                  <mark
-                    key={pi}
-                    ref={`${si}:${pi}` === firstKey ? (el) => void (markRef.current = el) : undefined}
-                    className="bg-primary/15 text-ink underline decoration-primary/50 decoration-2 underline-offset-[6px]"
-                  >
-                    {part}
-                  </mark>
-                );
-              })}
-              {joinOn ? <mark className="bg-primary/15 underline decoration-primary/50 decoration-2 underline-offset-[6px]"> </mark> : " "}
-            </span>
+              <SegmentText
+                key={s.id}
+                text={s.text}
+                marked={parts ? parts.sort((a, b) => a - b).join(",") : ""}
+                // the space between two segments is highlighted when the quote continues across them
+                joinNext={!!parts && parts.includes(lastPart) && (perSegment.get(si + 1)?.includes(0) ?? false)}
+                firstPart={first && first[0] === si ? first[1] : null}
+                onFirstMark={onFirstMark}
+              />
             );
           })}
           {interim && <span className="text-idle">{interim}</span>}

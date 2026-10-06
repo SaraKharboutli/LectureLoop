@@ -23,6 +23,9 @@
 *.tsbuildinfo
 next-env.d.ts
 
+# demo video project (large media, rendered output)
+/demo-video/
+
 # testing / dev artifacts
 /coverage
 /tmp/
