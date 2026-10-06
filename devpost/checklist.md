@@ -49,13 +49,13 @@ Build mode: fast (learner: "I don't want you to tell me when each step is finish
   Learner check: After a short session, tap End and check the summary matches what you did; answer one unanswered question there.
   Commit: `Add Lecture Mastery summary`
 
-- [ ] **5. It behaves calmly when things go wrong, and stays awake**
+- [x] **5. It behaves calmly when things go wrong, and stays awake**
   Becomes usable: Denied mic shows how to allow it plus Try again; a dropped connection shows Reconnecting… and recovers; screen stays on while listening; leaving mid-session asks for confirmation; layout is checked at phone and iPad sizes.
   Why now: These states matter in a real lecture hall and for a trustworthy demo, but only after the loop works.
   PRD ref: `prd.md > States and Boundaries`, `prd.md > Look and Feel`
   Spec ref: `spec.md > Important Failure Modes`, `spec.md > Device Helpers`, `spec.md > Live Transcription Client`, `spec.md > Look and Feel`
   Build: `MicPermissionError`, reconnect status in header, `lib/device.ts` (wake lock, beforeunload), responsive/visual polish pass against Look and Feel.
-  Verify (mechanical): Browser: denying mic (or simulated `NotAllowedError`) shows the error view; forcing the WebSocket closed shows Reconnecting… then Listening again; screenshots at 390×844 and 820×1180 match the palette and layout; `npm test` and `npm run build` pass.
+  Verify (mechanical): Browser: denying mic (or simulated `NotAllowedError`) shows the error view; forcing the WebSocket closed shows Reconnecting… then Listening again (verified with a fake-WebSocket unit test, `tests/transcriber.test.ts`, because the browser pane blocks the microphone); screenshots at 390×844 and 820×1180 match the palette and layout; `npm test` and `npm run build` pass.
   Learner check: Try denying the mic once, then allow it; turn Wi-Fi off for a few seconds during a session and back on.
   Commit: `Handle mic denial, reconnects, wake lock, and polish layout`
 

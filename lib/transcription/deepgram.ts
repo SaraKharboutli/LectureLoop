@@ -54,11 +54,6 @@ export class LiveTranscriber {
     }
   }
 
-  /** Test hook: simulate a dropped connection. */
-  dropConnectionForTesting(): void {
-    this.ws?.close();
-  }
-
   private async connect(): Promise<void> {
     let token: string;
     try {

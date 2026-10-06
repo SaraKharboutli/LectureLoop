@@ -10,6 +10,7 @@ import { CHECKPOINT_CONFIG as C } from "@/lib/checkpoints/config";
 import { shouldEvaluate, type Trigger } from "@/lib/checkpoints/scheduler";
 import type { CheckpointResponse } from "@/lib/checkpoints/types";
 import { buildWindow } from "@/lib/checkpoints/window";
+import { keepScreenAwake, warnBeforeLeaving } from "@/lib/device";
 import { LiveTranscriber } from "@/lib/transcription/deepgram";
 import { toTestedConcepts } from "./mastery";
 import { initialSession, sessionReducer } from "./reducer";
@@ -99,6 +100,17 @@ export function useLectureSession(devFeed: DevFeed | null = null) {
     );
     return () => clearInterval(id);
   }, [state.phase, maybeEvaluate]);
+
+  // While listening: keep the screen on and confirm before the page is closed (the session lives only in this page).
+  useEffect(() => {
+    if (state.phase !== "listening") return;
+    const releaseWake = keepScreenAwake();
+    const removeWarning = warnBeforeLeaving();
+    return () => {
+      releaseWake();
+      removeWarning();
+    };
+  }, [state.phase]);
 
   // Card lifetime: unanswered → disappears after the timeout; answered → auto-dismiss.
   useEffect(() => {
@@ -200,5 +212,5 @@ export function useLectureSession(devFeed: DevFeed | null = null) {
     dispatch({ type: "RESET" });
   }, [stopInputs]);
 
-  return { state, start, end, answer, dismiss, reset, clock, transcriberRef };
+  return { state, start, end, answer, dismiss, reset, clock };
 }
