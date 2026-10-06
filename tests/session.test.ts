@@ -53,6 +53,17 @@ describe("quick check cards", () => {
     expect(s.sched.inFlight).toBe(false);
   });
 
+  it("never shows the same question twice, even under a different concept label", () => {
+    const s = run(
+      started,
+      shown("q1", "Simplifying assumptions"),
+      { type: "QUESTION_SHOWN", id: "q2", question: q("Model trade-offs", { question: "About Simplifying assumptions?" }), atSec: 300 },
+    );
+    expect(s.questions.map((x) => x.id)).toEqual(["q1"]);
+    expect(s.activeQuestionId).toBe("q1");
+    expect(s.sched.lastVerdict).toBe("wait");
+  });
+
   it("records a correct live answer and shows positive feedback", () => {
     const s = run(started, shown("q1", "A"), { type: "ANSWER", questionId: "q1", choiceIndex: 0, from: "live" });
     expect(s.questions[0].result).toBe("correct");
@@ -137,7 +148,7 @@ describe("mastery", () => {
       { type: "QUESTION_SHOWN", id: "q1", question: q("Law of demand"), atSec: 100 },
       { type: "ANSWER", questionId: "q1", choiceIndex: 3, from: "live" },
       { type: "QUESTION_SHOWN", id: "q2", question: q("Equilibrium"), atSec: 250 },
-      { type: "QUESTION_SHOWN", id: "q3", question: q("Law of demand", { kind: "recheck" }), atSec: 400 },
+      { type: "QUESTION_SHOWN", id: "q3", question: q("Law of demand", { kind: "recheck", question: "A different question about the law of demand?" }), atSec: 400 },
       { type: "ANSWER", questionId: "q3", choiceIndex: 0, from: "live" },
       { type: "QUESTION_SHOWN", id: "q4", question: q("Price ceiling"), atSec: 550 },
       { type: "ANSWER", questionId: "q4", choiceIndex: 1, from: "live" },

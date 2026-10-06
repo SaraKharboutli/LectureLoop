@@ -8,7 +8,7 @@ import {
   onSpeech,
 } from "@/lib/checkpoints/scheduler";
 import type { CheckpointQuestion, Segment } from "@/lib/checkpoints/types";
-import { conceptKey } from "@/lib/checkpoints/validate";
+import { conceptKey, normalizeText } from "@/lib/checkpoints/validate";
 import type { Connection, Question, Session } from "./types";
 
 export type Action =
@@ -77,6 +77,11 @@ export function sessionReducer(s: Session, a: Action): Session {
 
     case "QUESTION_SHOWN": {
       if (s.phase !== "listening") return s;
+      // Never show the same question twice (the AI can repeat one under a different concept label).
+      const text = normalizeText(a.question.question);
+      if (s.questions.some((prev) => normalizeText(prev.question) === text)) {
+        return { ...s, sched: onEvaluationFinished(s.sched, "wait", a.atSec) };
+      }
       const q: Question = {
         ...a.question,
         id: a.id,
