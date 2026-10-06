@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LectureLoop App Map</title>
+<style>
+  :root {
+    --paper: #ffffff; --ink: #111827; --muted: #4b5563; --primary: #5b5bd6; --tint: #eef2ff;
+    --success: #15803d; --review: #b45309; --line: #c7cbe8; --code-bg: #f4f5fb;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0f1020; --ink: #eceef8; --muted: #a8adc7; --primary: #9d9dff; --tint: #1c1e3a;
+      --success: #4ade80; --review: #fbbf24; --line: #3a3d66; --code-bg: #181a33;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 2rem; margin: 0 0 4px; letter-spacing: -0.01em; }
+  h2 { font-size: 1.25rem; margin: 40px 0 8px; }
+  h3 { font-size: 1.05rem; margin: 0 0 4px; }
+  p { margin: 8px 0; }
+  .sub { color: var(--muted); margin-top: 0; }
+  .card { background: var(--tint); border-radius: 16px; padding: 16px 18px; margin: 12px 0; }
+  .grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  code, .path { font-family: ui-monospace, Consolas, monospace; font-size: 0.9em; background: var(--code-bg); padding: 1px 6px; border-radius: 6px; overflow-wrap: anywhere; }
+  pre { background: var(--code-bg); padding: 12px 14px; border-radius: 12px; overflow-x: auto; font-size: 0.85em; line-height: 1.5; }
+  ol.route { padding-left: 1.2em; }
+  ol.route > li { margin: 14px 0; }
+  details { border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px; margin: 10px 0; }
+  summary { cursor: pointer; font-weight: 600; }
+  summary:focus-visible, a:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+  a { color: var(--primary); }
+  table { border-collapse: collapse; width: 100%; font-size: 0.95em; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  .diagram { width: 100%; height: auto; margin: 8px 0; }
+  .diagram text { fill: var(--ink); font: 13px system-ui, sans-serif; }
+  .diagram .box { fill: var(--tint); stroke: var(--primary); stroke-width: 1.5; }
+  .diagram .ext { fill: var(--paper); stroke: var(--muted); stroke-dasharray: 4 3; }
+  .diagram .arrow { stroke: var(--primary); stroke-width: 1.8; fill: none; marker-end: url(#arrow); }
+  .diagram .small { font-size: 11px; fill: var(--muted); }
+  .note { color: var(--muted); font-size: 0.9em; }
+</style>
+</head>
+<body>
+<main>
+  <h1>LectureLoop — App Map</h1>
+  <p class="sub">A take-home guide to what you built, where each part lives, and where to start when you want to change something. Snapshot of commit <code>d8bfcef</code>; the code may drift after this.</p>
+
+  <h2>What it is, in one breath</h2>
+  <p>LectureLoop listens to a live English lecture, shows it as text, and about every minute and a half asks one multiple-choice question about a point the lecturer has just finished. It only asks things that were actually said, and it checks the quote to prove it. At the end you get a mastery summary, and every ended lecture is saved on the device so you can come back and retry what you missed.</p>
+
+  <div class="grid">
+    <div class="card"><h3>Ears</h3><p>The microphone streams to <b>Deepgram</b>, which turns speech into text live.</p></div>
+    <div class="card"><h3>Timing rules</h3><p>Plain code decides <i>when</i> it's worth asking the AI: at the end of a sentence, when a question is due.</p></div>
+    <div class="card"><h3>Brain</h3><p><b>Claude</b> decides <i>what</i> to ask, and writes the question plus a word-for-word quote.</p></div>
+    <div class="card"><h3>Safety check + memory</h3><p>Code verifies the quote is really in the transcript, then tracks answers and saves lectures on the device.</p></div>
+  </div>
+
+  <h2>Follow one action: a Quick Check appears</h2>
+  <svg class="diagram" viewBox="0 0 820 300" role="img" aria-labelledby="dtitle">
+    <title id="dtitle">How a finished sentence becomes a Quick Check card</title>
+    <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5b5bd6"/></marker></defs>
+    <rect class="ext" x="10" y="20" width="150" height="56" rx="10"/><text x="85" y="44" text-anchor="middle">Lecturer speaks</text><text class="small" x="85" y="62" text-anchor="middle">mic → Deepgram</text>
+    <rect class="box" x="210" y="20" width="180" height="56" rx="10"/><text x="300" y="44" text-anchor="middle">Sentence finalized</text><text class="small" x="300" y="62" text-anchor="middle">deepgram.ts → reducer.ts</text>
+    <rect class="box" x="440" y="20" width="180" height="56" rx="10"/><text x="530" y="44" text-anchor="middle">Is it worth asking?</text><text class="small" x="530" y="62" text-anchor="middle">scheduler.ts (plain rules)</text>
+    <rect class="ext" x="640" y="120" width="170" height="56" rx="10"/><text x="725" y="144" text-anchor="middle">Claude</text><text class="small" x="725" y="162" text-anchor="middle">decide + write MCQ</text>
+    <rect class="box" x="400" y="120" width="190" height="56" rx="10"/><text x="495" y="144" text-anchor="middle">/api/checkpoint</text><text class="small" x="495" y="162" text-anchor="middle">evaluate.ts → validate.ts</text>
+    <rect class="box" x="150" y="120" width="200" height="56" rx="10"/><text x="250" y="144" text-anchor="middle">Quote really said? New?</text><text class="small" x="250" y="162" text-anchor="middle">validate.ts (plain code)</text>
+    <rect class="box" x="150" y="225" width="200" height="56" rx="10"/><text x="250" y="249" text-anchor="middle">Quick Check card</text><text class="small" x="250" y="267" text-anchor="middle">QuickCheckCard.tsx</text>
+    <rect class="box" x="420" y="225" width="220" height="56" rx="10"/><text x="530" y="249" text-anchor="middle">Answer → mastery → saved</text><text class="small" x="530" y="267" text-anchor="middle">mastery.ts · savedLectures.ts</text>
+    <path class="arrow" d="M160 48 H205"/>
+    <path class="arrow" d="M390 48 H435"/>
+    <path class="arrow" d="M620 48 C700 48 725 80 725 115"/>
+    <path class="arrow" d="M640 148 H595"/>
+    <path class="arrow" d="M400 148 H355"/>
+    <path class="arrow" d="M250 176 V220"/>
+    <path class="arrow" d="M350 253 H415"/>
+  </svg>
+  <p class="note">Dashed boxes are outside services. Every other box is code in this repository.</p>
+
+  <h2>The route through the code (reference route)</h2>
+  <p class="note">This route wasn't toured live together; it's here so you can follow it whenever you like. Open the project in an editor and search for the anchors in <code>this font</code>.</p>
+  <ol class="route">
+    <li>
+      <h3>1. A sentence ends → "maybe now?"</h3>
+      <p><span class="path">lib/session/reducer.ts</span>, search <code>case "FINAL_SEGMENT"</code>. Each finished piece of text is added to the transcript. If it ends with <code>.</code>, <code>?</code> or <code>!</code>, a counter (<code>boundaryTick</code>) goes up. <span class="path">lib/session/useLectureSession.ts</span> reacts to that counter (<code>maybeEvaluate("boundary"</code>) and asks the timing rules in <span class="path">lib/checkpoints/scheduler.ts</span> (<code>shouldEvaluate</code>): warm-up done? 75 s since the last card? Is a question <i>due</i> (90 s)? Only then does it call the server.</p>
+    </li>
+    <li>
+      <h3>2. The server asks Claude, then checks the answer</h3>
+      <p><span class="path">app/api/checkpoint/route.ts</span> → <span class="path">lib/checkpoints/evaluate.ts</span> (<code>evaluateCheckpoint</code>) sends the recent transcript and the rules in <span class="path">lib/checkpoints/prompt.ts</span> (<code>SYSTEM_PROMPT</code>). Claude must reply in the fixed shape from <span class="path">lib/checkpoints/schema.ts</span>. Then <span class="path">lib/checkpoints/validate.ts</span> (<code>validateDecision</code>, <code>isGrounded</code>) throws away anything whose quote isn't in the transcript, any repeat, or a bad set of choices, and shuffles the choices.</p>
+    </li>
+    <li>
+      <h3>3. The card, the answer, and what's remembered</h3>
+      <p><span class="path">components/QuickCheckCard.tsx</span> shows the question. Tapping a choice dispatches <code>ANSWER</code> (reducer). <span class="path">lib/session/mastery.ts</span> (<code>deriveConcepts</code>) turns answers into ✓ / ⚠ / ○ per concept. When you tap End, <span class="path">lib/session/savedLectures.ts</span> (<code>upsertLecture</code>) keeps the lecture on the device for <b>My lectures</b>.</p>
+    </li>
+  </ol>
+
+  <h2>To change this, start here</h2>
+  <table>
+    <thead><tr><th>If you want to change…</th><th>Start here</th></tr></thead>
+    <tbody>
+      <tr><td>How often questions appear (90 s due, 75 s minimum, warm-up)</td><td><span class="path">lib/checkpoints/config.ts</span>: <code>TARGET_GAP_SEC</code>, <code>MIN_GAP_SEC</code>, <code>WARMUP_SEC</code></td></tr>
+      <tr><td>What kind of questions Claude writes (difficulty, style, what counts as trivial)</td><td><span class="path">lib/checkpoints/prompt.ts</span>: <code>SYSTEM_PROMPT</code>. Then test with <code>npm run replay -- fixtures/lectures/history-cold-war-end.txt</code></td></tr>
+      <tr><td>Which Claude model is used</td><td><code>CLAUDE_MODEL</code> in <code>.env.local</code> / Vercel settings (no code change)</td></tr>
+      <tr><td>How long an unanswered card stays</td><td><span class="path">lib/checkpoints/config.ts</span>: <code>CARD_TIMEOUT_SEC</code></td></tr>
+      <tr><td>Colors</td><td><span class="path">app/globals.css</span>: the <code>@theme</code> block</td></tr>
+      <tr><td>Card wording ("Got it ✓", "Needs review")</td><td><span class="path">components/QuickCheckCard.tsx</span></td></tr>
+      <tr><td>Start screen text or the My lectures list</td><td><span class="path">components/StartScreen.tsx</span>, <span class="path">components/MyLectures.tsx</span></td></tr>
+      <tr><td>Speech-to-text settings (model, language)</td><td><span class="path">lib/transcription/deepgramUrl.ts</span></td></tr>
+    </tbody>
+  </table>
+
+  <h2>A practice to reuse</h2>
+  <div class="card">
+    <p><b>Report what you observed, with numbers, and let the agent find the cause.</b> The first version looked fine in the agent's own tests. Your live tests found the real problem: <i>"8 minutes, several ideas, one question"</i>, then <i>"3 minutes, no question"</i>. Those concrete observations, plus the decision log (<code>tmp/checkpoint-log.jsonl</code>), pointed to the cause. Questions were waiting for pauses that recorded lecturers rarely make, and the test lectures had hidden this because they were split into neat sentences. The fix (sentence-based rhythm, plus test lectures fragmented like real speech-to-text) is recorded in <span class="path">devpost/checklist.md</span> → <b>Revisions</b>, and the replay summaries show the before/after.</p>
+    <p><b>On a new project:</b> write down what "working" looks like as something you can count or see, test with real input early, and when it misbehaves tell the agent <i>what happened vs. what you expected</i> (and how often). Leave the technical choices to the agent, but keep the decisions that change cost, accounts, or the core experience (like the question rhythm) for yourself, as you did here.</p>
+  </div>
+
+  <h2>Run it again</h2>
+  <pre>npm install
+npm run dev            # then open http://localhost:3000 (Chrome/Edge), tap Start Learning
+npm test               # 54 unit tests
+npm run replay -- fixtures/lectures/biology-photosynthesis.txt</pre>
+  <p>Keys go in <code>.env.local</code> (see <code>.env.example</code>). Live version: <a href="https://lecture-loop-three.vercel.app">lecture-loop-three.vercel.app</a>. Planning documents: <span class="path">devpost/scope.md</span>, <span class="path">prd.md</span>, <span class="path">spec.md</span>, <span class="path">checklist.md</span>.</p>
+
+  <details>
+    <summary>The planning trail in one paragraph</summary>
+    <p>Scope set the kernel (active learning <i>during</i> the lecture) and the cuts (no accounts, no slides, English only). The PRD defined the screens, colors, and card behavior. The spec chose Deepgram + Claude Sonnet 5.5 + Next.js on Vercel's free plan. The build went in 7 working slices. Real tests changed three things: the question timing (twice), the card size on phones, and adding My lectures at final review.</p>
+  </details>
+</main>
+</body>
+</html>

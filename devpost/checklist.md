@@ -91,15 +91,15 @@ Build mode: fast (learner: "I don't want you to tell me when each step is finish
 
 ## Code Tour and App Map
 
-- [ ] Learning activity complete — guided route, focused alternative, prior practice connected, or brief recap
-- [ ] Optional edit and transfer reflection addressed — offered/declined/already covered/not applicable as appropriate
-- [ ] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
+- [x] Learning activity complete — brief recap (learner asked for explanations at the end without extra exercises)
+- [x] Optional edit and transfer reflection addressed — edit not applicable (learner declined extra check-ins); reflection question offered in the final message
+- [x] `devpost/app-map.html` generated from finished code, checked, and shown, including a project-grounded practice to reuse
 
-Activity and evidence:
-Route and stops:
-Edit outcome:
-Reflection:
-Activity mode:
+Activity and evidence: Recap connected to the learner's goal (working effectively with agents): their live-test observations ("8 min → 1 question", "3 min → none") plus the dev decision log diagnosed the pause-based timing flaw; fix and before/after replay results recorded in Revisions.
+Route and stops: Reference route only (not toured live): `lib/session/reducer.ts` FINAL_SEGMENT → `lib/checkpoints/scheduler.ts` shouldEvaluate → `lib/checkpoints/evaluate.ts` / `validate.ts` → `components/QuickCheckCard.tsx` → `lib/session/mastery.ts` / `savedLectures.ts`.
+Edit outcome: Not applicable (no extra exercise requested).
+Reflection: Offered once in the closing message; optional.
+Activity mode: Recap + app map (static reference).
 
 ## Revisions
 
