@@ -182,6 +182,13 @@ PRD ref: `prd.md > Quick Check question` (grounded), `prd.md > Checkpoint timing
 Actions: `START`, `MIC_ERROR`, `CONNECTION`, `INTERIM`, `FINAL_SEGMENT`, `EVAL_STARTED`, `EVAL_DONE`, `QUESTION_SHOWN`, `ANSWER`, `CARD_TIMEOUT`, `CARD_DISMISSED`, `END`, `RESET`.
 PRD ref: `prd.md > Understanding tracking`, `prd.md > Ending and Mastery Summary`.
 
+### Saved Lectures
+`lib/session/savedLectures.ts` (pure helpers + guarded `localStorage` access) and `components/MyLectures.tsx` / `components/SavedLectureScreen.tsx`. Added at final review (learner decision).
+- Key `lectureloop.lectures.v1` holds a JSON array of `{ id, savedAt, durationSec, transcript, questions }` (newest first, max 30 kept; oldest dropped). Every read/write is wrapped in try/catch, so private mode or full storage just means nothing is saved, never a crash.
+- Saved when a session reaches the summary (only if it heard something); re-saved when the student answers from the summary.
+- Retrying a question appends a copy (`kind: "recheck"`, unanswered) to that lecture, so `deriveConcepts` turns a later correct answer into "understood after review".
+PRD ref: `prd.md > My lectures (saved on this device)`.
+
 ### Device Helpers
 `lib/device.ts`. `navigator.wakeLock.request("screen")` while listening; it fails quietly if unsupported and is re-requested when the page becomes visible again. The `beforeunload` warning is active only while listening.
 PRD ref: `prd.md > States and Boundaries`.

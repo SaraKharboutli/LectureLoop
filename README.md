@@ -22,6 +22,7 @@ Students often spend an hour passively listening to a lecture, then another hour
 4. **Feedback**: a correct answer shows "Got it ✓" and the card closes itself. A wrong answer shows "Needs review", the correct answer, and a one-line explanation from the lecture. An ignored card disappears after a minute and is kept as "not answered".
 5. **Understanding tracking**: each concept is *understood*, *needs review*, or *not answered*. A missed concept can be re-checked later if the lecturer comes back to it.
 6. **End → Lecture Mastery**: counts per status, every question with your answer, the correct answer and the explanation. Questions you missed can be answered right there.
+7. **My lectures**: every ended session is saved **on your device** (no account). The Start screen lists them. Open one to see its summary and the lecture text, and **Try again** any question you got wrong. Getting it right marks the concept "understood after review".
 
 Everything is designed for a quick glance: calm colors, big tap targets, and cards that fit a phone screen without scrolling.
 
@@ -50,7 +51,7 @@ Everything is designed for a quick glance: calm colors, big tap targets, and car
 - **Deciding when and what to ask:** [Claude](https://docs.claude.com) (`claude-sonnet-5-5` by default) receives the last few minutes of transcript, the last ~30 seconds ("what is being said right now"), the concepts already tested, and whether a question is *due*. It answers in a fixed JSON format ([`lib/checkpoints/schema.ts`](lib/checkpoints/schema.ts)), either *wait* or *ask* with the question, four choices, the answer, an explanation, and an evidence quote. The rules it follows are in [`lib/checkpoints/prompt.ts`](lib/checkpoints/prompt.ts).
 - **Grounding check:** before any question is shown, [`lib/checkpoints/validate.ts`](lib/checkpoints/validate.ts) confirms the evidence quote actually appears in the transcript (tolerating small recognition differences), that there are 4 distinct choices, and that the concept hasn't been tested already. Anything that fails is silently skipped. Choices are shuffled on the server.
 - **Timing rules:** [`lib/checkpoints/scheduler.ts`](lib/checkpoints/scheduler.ts) and [`config.ts`](lib/checkpoints/config.ts). Checks happen only at the end of a complete sentence (pauses don't matter). A question becomes due after 90 s, cards are at least 75 s apart, and one request runs at a time.
-- **State:** everything lives in page memory ([`lib/session/`](lib/session/)). There are no accounts and no database, and closing the page ends the session.
+- **State:** a running session lives in page memory ([`lib/session/`](lib/session/)). Ended sessions are saved in the browser's `localStorage` ([`savedLectures.ts`](lib/session/savedLectures.ts), newest 30 kept). There are no accounts, no database, and no server-side storage of lectures.
 
 ## Tech stack
 
@@ -131,7 +132,7 @@ npm run probe-ai             # one cheap request to check the Claude key/model
 
 - **English only.** Arabic and mixed Arabic–English lectures are planned, not built.
 - **Multiple choice only.** Free-recall and confidence questions are future ideas.
-- **No saving.** A session lives in the open page. Refreshing or closing it loses the session (the app warns you first).
+- **Saving is per device.** Ended lectures are kept in this browser only. They don't sync across devices and are lost if you clear browser data. A session still in progress is lost if the page is closed (the app warns you first).
 - **Audio quality matters.** It works best when the device clearly hears one speaker. Noisy rooms, far-away microphones, and several speakers are not handled specially.
 - **The AI can still be wrong.** The grounding check guarantees the quoted evidence was really said, but a question can still be imperfectly worded or slightly off-target.
 - **Screen wake lock** depends on browser support. If unsupported, the device may dim during a long lecture.
@@ -143,7 +144,7 @@ app/                 Next.js app: page, layout, API routes
   api/checkpoint/    Claude decision + validated question
   api/stt-token/     short-lived Deepgram token for the browser
   api/dev-fixture/   development-only fixture feed (404 in production)
-components/          Start, Lecture (transcript + quick checks), Summary screens
+components/          Start (+ My lectures), Lecture (transcript + quick checks), Summary, saved-lecture screens
 lib/audio/           microphone → 16-bit PCM
 lib/transcription/   Deepgram live client, token helper
 lib/checkpoints/     timing rules, prompt, schema, validator, transcript window

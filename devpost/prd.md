@@ -97,12 +97,21 @@ Source: `scope.md > The POC Boundary`.
   - [ ] After a session with a mix of right, wrong, and ignored questions, the counts match what happened.
   - [ ] Answering an unanswered question on the summary updates its status and the counts.
 
+### My lectures (saved on this device)
+Added at final review (learner decision): so the student leaves with a review list they can come back to.
+- When **End** is tapped, the session (date, length, lecture text, every question with the student's answers) is saved **on this device only**. No accounts, no server storage.
+- The Start screen lists **My lectures** (newest first) with date, length and ✓ / ⚠ / ○ counts.
+- Opening one shows its Lecture Mastery summary, the lecture text, and lets the student **try again** any question they missed or got wrong; a correct retry marks the concept understood (after review). Answering an unanswered question there also updates it.
+- A saved lecture can be deleted.
+  - [ ] After ending a session, it appears under My lectures on the Start screen, and is still there after reloading the page.
+  - [ ] Opening it shows the questions and the lecture text; retrying a "needs review" question correctly turns it into ✓.
+
 ## States and Boundaries
 - **First use / mic permission prompt:** the browser asks for the mic. If the student denies it, they see a plain message explaining that LectureLoop needs the microphone, how to allow it, and a **Try again** button.
 - **Listening, nothing to ask yet:** the bottom area shows a calm "Listening…" state. This is normal and expected; no "no questions yet" alarms.
 - **Connection or AI hiccup:** if transcription drops, the header shows "Reconnecting…" and the transcript so far stays on screen; listening resumes automatically if possible. If a question can't be created, the app silently skips that checkpoint and keeps listening, with no broken card.
 - **Session ended with no questions** (e.g. very short session): the summary says no checkpoints were reached yet and shows the transcript length, not an empty or broken page.
-- **Persistence:** none. A session lives only while the page is open. Refreshing or closing loses it. *Assumption:* the browser warns before leaving an active session.
+- **Persistence:** an *active* session lives only while the page is open (the browser warns before leaving). **Ended** sessions are saved in this browser on this device (My lectures). Clearing browser data removes them; they don't sync to other devices.
 - **Screen stays on:** *assumption:* while listening, the device screen should not go to sleep, if the browser allows it.
 - **Language:** English only. Non-English speech is not supported in this version.
 
@@ -125,7 +134,7 @@ Source: `scope.md > The POC Boundary`.
 - Mastery Summary with counts, per-question details, and answering unanswered questions.
 
 ## Deferred From the POC
-- **Saving sessions / history across visits** — needs storage and possibly accounts; one session proves the loop.
+- **Saving sessions across devices / accounts** — on-device saving was added at final review (see My lectures); syncing between devices would need accounts and a server.
 - **Exporting the summary or transcript** — useful, but not needed to prove active learning during the lecture.
 - **Other question types** (free-text recall, confidence checks) — MCQ gives a known correct answer and the fastest interaction.
 - **Settings** (question frequency, difficulty) — sensible defaults are enough to prove timing.

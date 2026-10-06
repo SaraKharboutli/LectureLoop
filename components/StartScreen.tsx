@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 
-type Props = { onStart: () => Promise<void>; micError: string | null; devFeedLabel?: string };
+type Props = { onStart: () => Promise<void>; micError: string | null; devFeedLabel?: string; children?: ReactNode };
 
-export function StartScreen({ onStart, micError, devFeedLabel }: Props) {
+export function StartScreen({ onStart, micError, devFeedLabel, children }: Props) {
   const [starting, setStarting] = useState(false);
 
   const handleStart = async () => {
@@ -54,6 +54,8 @@ export function StartScreen({ onStart, micError, devFeedLabel }: Props) {
       {devFeedLabel && (
         <p className="mt-4 text-xs text-idle">Development test mode: replaying “{devFeedLabel}” instead of the microphone.</p>
       )}
+
+      {children}
     </main>
   );
 }

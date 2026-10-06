@@ -59,7 +59,7 @@ Build mode: fast (learner: "I don't want you to tell me when each step is finish
   Learner check: Try denying the mic once, then allow it; turn Wi-Fi off for a few seconds during a session and back on.
   Commit: `Handle mic denial, reconnects, wake lock, and polish layout`
 
-- [ ] **6. Open it on your phone or iPad**
+- [x] **6. Open it on your phone or iPad**
   Becomes usable: A free `https://…vercel.app` link runs LectureLoop on the learner's phone/iPad with the mic; README explains setup, env vars, running, and deploying.
   Why now: The target devices need `https`; the repo docs are required for submission and for deploying.
   PRD ref: `prd.md > Screens and Layout` (phone/iPad first), `prd.md > Open Questions` (testing on phone/iPad)
@@ -69,14 +69,25 @@ Build mode: fast (learner: "I don't want you to tell me when each step is finish
   Learner check: Open the link on your iPad/phone, start a session with a lecture playing aloud, and complete one Quick Check.
   Commit: `Add README, license, and deployment notes`
 
+- [x] **7. My lectures: come back to what needs review**
+  Becomes usable: Ended sessions are saved on the device; the Start screen lists them; opening one shows its summary and lecture text and lets you retry missed/wrong questions; lectures can be deleted.
+  Why now: Added at final review — the learner chose it so the product doesn't end at the summary (the student leaves with a review list they can return to).
+  PRD ref: `prd.md > My lectures (saved on this device)`
+  Spec ref: `spec.md > Saved Lectures`
+  Build: `lib/session/savedLectures.ts`, save on summary in the session hook, `MyLectures` list on the Start screen, `SavedLectureScreen` (reusing the summary view) with retry and delete.
+  Verify (mechanical): unit tests for save/load/update/retry/limit; dev-feed session → End → reload → lecture listed and opens with its questions and text; `npm run build`.
+  Learner check: (learner asked for no extra check-ins; covered by the mechanical check)
+  Commit: `Add My lectures: save sessions on the device and retry missed questions`
+
 ## Hands-on Checkpoints
 
 - [x] Early usable behavior explored — after slice 3 (live cards on localhost with a real recorded lecture). Three learner tests on a recorded history lecture; feedback (too few questions, don't depend on pauses, aim for one every 1.5–2 min) applied and confirmed: "two questions in about 3 minutes" — see Revisions.
-- [ ] Final kick-the-tires exploration and feedback completed
+- [x] Final kick-the-tires exploration and feedback completed — learner tested the deployed app on an iPad with a lecture: "the site worked fine on the iPad and everything is fine". Their one change request (save lectures/questions to come back to) became slice 7.
 
 ## Final Review
 
-- [ ] Final review complete — feedback resolved and learner confirms ready to ship
+- [x] Add "My lectures" (save sessions on the device, retry missed questions) — learner-requested at final review; built as slice 7, verified (unit tests + dev-feed session → End → reload → open → retry → "✓ after review"), committed. Learner asked for no further check-in: "if you see the lecture and the questions are saved, move on".
+- [x] Final review complete — feedback resolved and learner confirms ready to ship ("consider it ready" once My lectures is in).
 
 ## Code Tour and App Map
 

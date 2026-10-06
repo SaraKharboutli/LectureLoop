@@ -14,6 +14,7 @@ import { keepScreenAwake, warnBeforeLeaving } from "@/lib/device";
 import { LiveTranscriber } from "@/lib/transcription/deepgram";
 import { toTestedConcepts } from "./mastery";
 import { initialSession, sessionReducer } from "./reducer";
+import { upsertLecture } from "./savedLectures";
 import type { Session } from "./types";
 
 const CORRECT_DISMISS_MS = 2000;
@@ -22,7 +23,7 @@ const INCORRECT_DISMISS_MS = 8000;
 /** DEVELOPMENT ONLY: replay a test lecture instead of the microphone (?devfeed=<fixture>&speed=<n>). */
 export type DevFeed = { fixture: string; speed: number };
 
-function newId(): string {
+export function newId(): string {
   return typeof crypto !== "undefined" && "randomUUID" in crypto
     ? crypto.randomUUID()
     : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -39,6 +40,8 @@ export function useLectureSession(devFeed: DevFeed | null = null) {
   const micRef = useRef<MicCapture | null>(null);
   const transcriberRef = useRef<LiveTranscriber | null>(null);
   const feedTimersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const lectureIdRef = useRef("");
+  const savedAtRef = useRef(0);
 
   useEffect(() => {
     stateRef.current = state;
@@ -112,6 +115,19 @@ export function useLectureSession(devFeed: DevFeed | null = null) {
     };
   }, [state.phase]);
 
+  // My lectures: save the ended session on this device, and again whenever it's answered from the summary.
+  useEffect(() => {
+    if (state.phase !== "summary") return;
+    if (state.segments.length === 0 && state.questions.length === 0) return;
+    upsertLecture({
+      id: lectureIdRef.current,
+      savedAt: savedAtRef.current,
+      durationSec: Math.round(state.endedAtSec ?? 0),
+      transcript: state.segments.map((s) => s.text).join(" "),
+      questions: state.questions,
+    });
+  }, [state.phase, state.questions, state.segments, state.endedAtSec]);
+
   // Card lifetime: unanswered → disappears after the timeout; answered → auto-dismiss.
   useEffect(() => {
     const qid = state.activeQuestionId;
@@ -150,6 +166,7 @@ export function useLectureSession(devFeed: DevFeed | null = null) {
     const segments = fixtureToSegments(await res.text(), { fragment: true });
     speedRef.current = feed.speed;
     startedAtRef.current = Date.now();
+    lectureIdRef.current = newId();
     sessionIdRef.current++;
     inFlightRef.current = false;
     dispatch({ type: "START", at: startedAtRef.current });
@@ -177,6 +194,7 @@ export function useLectureSession(devFeed: DevFeed | null = null) {
     micRef.current = mic;
     speedRef.current = 1;
     startedAtRef.current = Date.now();
+    lectureIdRef.current = newId();
     sessionIdRef.current++;
     inFlightRef.current = false;
     dispatch({ type: "START", at: startedAtRef.current });
@@ -198,6 +216,7 @@ export function useLectureSession(devFeed: DevFeed | null = null) {
     stopInputs();
     sessionIdRef.current++;
     inFlightRef.current = false;
+    savedAtRef.current = Date.now();
     dispatch({ type: "END", atSec: clock() });
   }, [clock, stopInputs]);
 
